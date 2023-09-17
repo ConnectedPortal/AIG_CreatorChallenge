@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private CharacterController controller;
     [SerializeField] private float speed = 6f;
     [SerializeField] private float turnSmoothTime = 0.1f;
@@ -11,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        PlayerInput();
+        if (!playerHealth.playerIsDead) PlayerInput();
     }
 
     private void PlayerInput()

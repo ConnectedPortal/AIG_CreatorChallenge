@@ -61,11 +61,15 @@ public class EnemyRatAI : MonoBehaviour
     private void AttackPlayer()
     {
         //navAgent.SetDestination(transform.position);
-        transform.LookAt(player);
+        //transform.LookAt(player);
+
+        navAgent.SetDestination(player.position);
 
         if (!alreadyAttacked)
         {
             alreadyAttacked = true;
+            //navAgent.SetDestination(transform.position);
+            Wandering();
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
@@ -73,5 +77,14 @@ public class EnemyRatAI : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+        //Wandering();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }
