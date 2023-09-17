@@ -7,15 +7,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private CharacterController controller;
     [SerializeField] private float speed = 6f;
+    [SerializeField] private float increaseSpeedValue = 2f;
     [SerializeField] private float turnSmoothTime = 0.1f;
     private float turnSmoothVelocity;
 
     void Update()
     {
-        if (!playerHealth.playerIsDead) PlayerInput();
+        if (!playerHealth.playerIsDead)
+        {
+            PlayerWalking();
+            PlayerRunning();
+        }
     }
 
-    private void PlayerInput()
+    private void PlayerWalking()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -28,6 +33,21 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             controller.Move(direction * speed * Time.deltaTime);
+        }
+    }
+
+    private void PlayerRunning()
+    {
+        //Create a time limit for running
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            speed += increaseSpeedValue;
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed -= increaseSpeedValue;
         }
     }
 }

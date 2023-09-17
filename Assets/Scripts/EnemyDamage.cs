@@ -12,8 +12,7 @@ public class EnemyDamage : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //playerDetected = true;
-            Debug.Log("Player Detected");
+            //Debug.Log("Player Detected");
             DamagePlayer();
         }
     }

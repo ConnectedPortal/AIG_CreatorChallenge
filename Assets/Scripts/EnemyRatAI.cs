@@ -8,7 +8,8 @@ public class EnemyRatAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private NavMeshAgent navAgent;
     [SerializeField] private Transform player;
-    [SerializeField] private LayerMask whatIsGround, whatIsPlayer;
+    [SerializeField] private Transform cheese;
+    [SerializeField] private LayerMask whatIsGround, whatIsPlayer, whatIsCheese;
 
     [Header("Wandering")]
     [SerializeField] private Vector3 walkPoint;
@@ -21,16 +22,18 @@ public class EnemyRatAI : MonoBehaviour
 
     [Header("States")]
     [SerializeField] private float sightRange, attackRange;
-    [SerializeField] private bool playerInSightRange, playerInAttackRange;
+    [SerializeField] private bool playerInSightRange, playerInAttackRange, cheeseInSightRange;
 
     private void Update()
     {
+        cheeseInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsCheese);
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
+        if (cheeseInSightRange) ChaseCheese();
         if (!playerInSightRange && !playerInAttackRange) Wandering();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+        if (playerInSightRange && !playerInAttackRange && !cheeseInSightRange) ChasePlayer();
+        if (playerInSightRange && playerInAttackRange && !cheeseInSightRange) AttackPlayer();
     }
 
     private void Wandering()
@@ -60,24 +63,24 @@ public class EnemyRatAI : MonoBehaviour
 
     private void AttackPlayer()
     {
-        //navAgent.SetDestination(transform.position);
-        //transform.LookAt(player);
-
         navAgent.SetDestination(player.position);
 
         if (!alreadyAttacked)
         {
             alreadyAttacked = true;
-            //navAgent.SetDestination(transform.position);
             Wandering();
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
 
+    private void ChaseCheese()
+    {
+        navAgent.SetDestination(cheese.position);
+    }
+
     private void ResetAttack()
     {
         alreadyAttacked = false;
-        //Wandering();
     }
 
     private void OnDrawGizmosSelected()
